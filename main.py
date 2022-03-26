@@ -26,17 +26,10 @@ def data_init(path: str = './dataset',
     x = dataset.iloc[:, 1:-1].to_numpy()
     y = dataset.iloc[:, -1].to_numpy()
 
-
     x = torch.from_numpy(x)
-    y = torch.from_numpy(y)
+    y = torch.from_numpy(y).type(torch.LongTensor)
 
     dataset = LabeledDataset(x, y)
-
-
-
-    """
-    TODO: encode the labels y, and convert x, y into LabeledDataset (in the `data` module)
-    """
 
     train_size = int((train_val_test_split[0] / sum(train_val_test_split)) * len(dataset))
     val_size = int((train_val_test_split[1] / sum(train_val_test_split)) * len(dataset))
@@ -70,7 +63,7 @@ SGD_PROFILE = OptimizerProfile(SGD, {
 def train_model(model: Callable[..., Module], fname: str, model_params: Dict[str, Any] = {},
                 epochs: int = 100,
                 continue_from: int = 0,
-                batch_size: int = 100):
+                batch_size: int = 30):
     """
 
     :param model:
@@ -216,10 +209,9 @@ def experiment(epochs: int = 50):
 
 
 if __name__ == '__main__':
-    # data_init()
+    #data_init()
     TRAIN, VAL, TEST = load_data()
     TRAINED_MODELS_PATH = Path("trained-models")
     experiment()
-
 
 

@@ -22,8 +22,6 @@ class SimpleMLP(Module):
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout),
             nn.Linear(100, 4),
-            nn.ReLU(inplace=True),
-            nn.Dropout(p=dropout),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
