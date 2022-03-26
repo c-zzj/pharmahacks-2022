@@ -4,6 +4,8 @@ from classifier.metric import *
 from torch.optim import Adam
 from typing import Callable, Dict
 import pandas
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
 
 import numpy as np
 
@@ -17,9 +19,20 @@ def data_init(path: str = './dataset',
               train_val_test_split: List[int] = [7, 1, 2]):
     torch.manual_seed(rand_seed)
     dataset = pandas.read_csv(Path(path) / dataset_fname)
-    x = dataset.iloc[:, :-1].to_numpy()
+    le = preprocessing.LabelEncoder()
+    le.fit(dataset['disease'])
+    dataset['disease'] = le.transform(dataset['disease'])
+
+    x = dataset.iloc[:, 1:-1].to_numpy()
     y = dataset.iloc[:, -1].to_numpy()
-    print(dataset.iloc[:,1])
+
+
+    x = torch.from_numpy(x)
+    y = torch.from_numpy(y)
+
+    dataset = LabeledDataset(x, y)
+
+
 
     """
     TODO: encode the labels y, and convert x, y into LabeledDataset (in the `data` module)
@@ -29,13 +42,10 @@ def data_init(path: str = './dataset',
     val_size = int((train_val_test_split[1] / sum(train_val_test_split)) * len(dataset))
     test_size = len(dataset) - train_size - val_size
     train, val, test = random_split(dataset, [train_size, val_size, test_size])
-    train_set = LabeledDataset(train[:, :-1], train[:, -1])
-    val_set = LabeledDataset(val[:, :-1], val[:, -1])
-    test_set = LabeledDataset(test[:, :-1], test[:, -1])
-
-    torch.save(train_set, Path(path) / 'train')
-    torch.save(val_set, Path(path) / 'val')
-    torch.save(test_set, Path(path) / 'test')
+    #
+    torch.save(train, Path(path) / 'train')
+    torch.save(val, Path(path) / 'val')
+    torch.save(test, Path(path) / 'test')
 
 
 def load_data(path: str = './dataset'):
@@ -79,7 +89,7 @@ def train_model(model: Callable[..., Module], fname: str, model_params: Dict[str
 
     clf = NNClassifier(model, TRAIN, VAL, network_params=model_params)
 
-    conv_params = sum(p.numel() for p in clf.network.features.parameters() if p.requires_grad)
+    conv_params = sum(p.numel() for p in clf.network.layers.parameters() if p.requires_grad)
     print(conv_params)
 
     print(f"Epochs to train: {epochs}")
@@ -192,10 +202,11 @@ def plot_acc(entries: Dict[str, str], title: str, target: str, epochs_to_show: i
 
 def experiment(epochs: int = 50):
     to_run = (
-        (SimpleMLP, "simple-mlp")
+        (SimpleMLP, "simple-mlp"),
     )
 
     for p in to_run:
+        print(type(p))
         train_and_test(*p)
 
     entries = {
@@ -205,7 +216,7 @@ def experiment(epochs: int = 50):
 
 
 if __name__ == '__main__':
-    data_init()
+    # data_init()
     TRAIN, VAL, TEST = load_data()
     TRAINED_MODELS_PATH = Path("trained-models")
     experiment()

@@ -21,7 +21,7 @@ class SimpleMLP(Module):
             nn.Linear(100, 100),
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout),
-            nn.Linear(100, 3),
+            nn.Linear(100, 4),
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout),
         )
