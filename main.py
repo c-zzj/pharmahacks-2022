@@ -11,8 +11,6 @@ import numpy as np
 
 TRAINED_MODELS_PATH = Path("trained-models")
 
-
-
 def data_init(path: str = './dataset',
               dataset_fname: str = 'challenge_1_gut_microbiome_data.csv',
               rand_seed: int = 0,
