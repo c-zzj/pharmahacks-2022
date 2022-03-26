@@ -2,7 +2,7 @@ from classifier import *
 from timeit import default_timer as timer
 from matplotlib import pyplot as plt
 
-LEARNING_PATH_FNAME = "learning_path.pt"
+LEARNING_PATH_FNAME = "performance.pt"
 
 def save_model(folder_path: Path, save_last: bool = False, step: int = 1) -> TrainingPlugin:
     """

@@ -195,11 +195,10 @@ def plot_acc(entries: Dict[str, str], title: str, target: str, epochs_to_show: i
 
 def experiment(epochs: int = 50):
     to_run = (
-        (SimpleMLP, "simple-mlp"),
+        (SimpleMLP, "simple-mlp", {}, 100, 100, 30),
     )
 
     for p in to_run:
-        print(type(p))
         train_and_test(*p)
 
     entries = {
@@ -213,5 +212,4 @@ if __name__ == '__main__':
     TRAIN, VAL, TEST = load_data()
     TRAINED_MODELS_PATH = Path("trained-models")
     experiment()
-
 
