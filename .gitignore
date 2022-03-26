@@ -2,4 +2,3 @@
 /.idea
 /trained-models
 **/__pycache__/*
-/dataset
